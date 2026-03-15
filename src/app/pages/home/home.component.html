@@ -1,0 +1,92 @@
+<section class="page">
+  <div class="two-column">
+    <div class="card panel">
+      <div class="panel-header">
+        <h2>Ingredients</h2>
+        <p>Adjust your inventory and keep everything up to date.</p>
+      </div>
+
+      <div class="ingredient-list">
+        @for (ingredient of ingredients; track ingredient.name) {
+          <div class="ingredient-row">
+            <div class="ingredient-name">{{ ingredient.name }}</div>
+            <input
+              type="number"
+              min="0"
+              class="input"
+              [(ngModel)]="ingredient.quantity"
+              (ngModelChange)="onIngredientChange(ingredient.name, $event)"
+            />
+          </div>
+        }
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" (click)="resetDefaults()">
+          Reset to Defaults
+        </button>
+        <button class="btn btn-primary" (click)="findBestRecipes()">
+          Find Best Recipes
+        </button>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-header">
+        <h2>Optimal Recipes</h2>
+        <p>See the best combination to cook right now.</p>
+      </div>
+
+      @if (isLoading) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Calculating optimal recipes...</p>
+        </div>
+      } @else if (!isCalculated) {
+        <div class="empty-state">
+          Click "Find Best Recipes" to calculate.
+        </div>
+      } @else {
+        @if (result?.recipes?.length) {
+          <ul class="recipe-results">
+            @for (selection of result?.recipes; track selection.recipe.id) {
+              <li class="recipe-item">
+                <div>
+                  <div class="recipe-name">{{ selection.recipe.name }}</div>
+                  <div class="recipe-meta">
+                    {{ selection.count }}x · feeds
+                    {{ selection.recipe.feeds * selection.count }}
+                  </div>
+                </div>
+                <div class="recipe-count">{{ selection.count }}x</div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="empty-state">
+            No recipes can be made with the current inventory.
+          </p>
+        }
+
+        <div class="result-summary">
+          <div class="summary-item">
+            <span class="label">Total people fed</span>
+            <span class="value">{{ result?.totalPeopleFed }}</span>
+          </div>
+        </div>
+
+        <div class="remaining">
+          <h3>Remaining ingredients</h3>
+          <ul>
+            @for (item of result?.remainingIngredients | keyvalue; track item.key) {
+              <li>
+                <span>{{ item.key }}</span>
+                <span>{{ item.value }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </div>
+</section>

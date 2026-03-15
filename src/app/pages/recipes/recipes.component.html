@@ -1,0 +1,104 @@
+<section class="page">
+  <div class="page-header">
+    <button class="btn btn-outline" (click)="resetDefaults()">Reset to Defaults</button>
+  </div>
+
+  <div class="card form-card">
+    <h2>Add a new recipe</h2>
+    <div class="form-grid">
+      <label>
+        Name
+        <input class="input" [(ngModel)]="newRecipe.name" placeholder="Recipe name" />
+      </label>
+      <label>
+        Feeds
+        <input
+          class="input"
+          type="number"
+          min="1"
+          [(ngModel)]="newRecipe.feeds"
+        />
+      </label>
+      <label class="full">
+        Ingredients (one per line: Name: Amount)
+        <textarea
+          class="input"
+          rows="3"
+          [(ngModel)]="newRecipe.ingredientsText"
+          placeholder="Tomato: 2&#10;Cheese: 1"
+        ></textarea>
+      </label>
+    </div>
+    <button class="btn btn-primary" (click)="addRecipe()">Add Recipe</button>
+  </div>
+
+  <div class="recipe-grid">
+    @for (recipe of recipes; track recipe.id) {
+      <div class="card recipe-card">
+        <div class="card-header">
+          <div>
+            <h3>{{ recipe.name }}</h3>
+            <span class="feeds">Feeds {{ recipe.feeds }}</span>
+          </div>
+        </div>
+
+        @if (!recipe.isEditing) {
+          <div class="card-body">
+            <h4>Ingredients</h4>
+            <br/>
+            <ul>
+              @for (item of recipe.ingredients | keyvalue; track item.key) {
+                <li>
+                  <span>{{ item.key }}</span>
+                  <span>{{ item.value }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        } @else {
+          <div class="edit-form">
+            <label>
+              Name
+              <input class="input" [(ngModel)]="drafts[recipe.id].name" />
+            </label>
+            <label>
+              Feeds
+              <input
+                class="input"
+                type="number"
+                min="1"
+                [(ngModel)]="drafts[recipe.id].feeds"
+              />
+            </label>
+            <label>
+              Ingredients
+              <textarea
+                class="input"
+                rows="4"
+                [(ngModel)]="drafts[recipe.id].ingredientsText"
+              ></textarea>
+            </label>
+          </div>
+        }
+
+        <div class="card-actions">
+          @if (!recipe.isEditing) {
+            <button class="btn btn-outline" (click)="startEdit(recipe)">
+              Edit
+            </button>
+            <button class="btn btn-soft" (click)="deleteRecipe(recipe)">
+              Delete
+            </button>
+          } @else {
+            <button class="btn btn-primary" (click)="saveEdit(recipe)">
+              Save
+            </button>
+            <button class="btn btn-outline" (click)="cancelEdit(recipe)">
+              Cancel
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

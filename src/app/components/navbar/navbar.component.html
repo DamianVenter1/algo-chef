@@ -1,0 +1,17 @@
+<nav class="navbar">
+  <div class="brand">
+    <span class="logo">Algo-Chef</span>
+    <span class="tagline">Recipe Optimizer</span>
+  </div>
+  <div class="links">
+    <a routerLink="/home" routerLinkActive="active" class="nav-link">Home</a>
+    <a routerLink="/recipes" routerLinkActive="active" class="nav-link">Recipes</a>
+    <button class="theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
+      @if ((themeService.getTheme() | async) === 'dark') {
+        <span class="icon">☀️</span>
+      } @else {
+        <span class="icon">🌙</span>
+      }
+    </button>
+  </div>
+</nav>
